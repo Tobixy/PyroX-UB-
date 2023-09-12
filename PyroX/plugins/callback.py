@@ -44,13 +44,9 @@ async def help_commnds(_, query):
     if len(data) == 0:
         return await query.answer("🤔 something wrong.")
     module = data[0]['module']
-    help = data[0]['help']
+    help_text = data[0]['help']  # Renamed 'help' to 'help_text' to avoid conflicts
     button = InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ BACK", callback_data="help_back")]])
+    formatted_help = strings.HELP_CMD.format(module=module, help_text=help_text)  # Corrected formatting
     return await bot.edit_inline_text(inline_message_id=query.inline_message_id,
-                                      text=strings.HELP_CMD.format(module=module, help=help),
+                                      text=formatted_help,  # Use the formatted string
                                       parse_mode=enums.ParseMode.MARKDOWN, reply_markup=button)
-odule']   help = data[0]['help']
-   button = InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ BACK",callback_data="help_back")]])
-   return await bot.edit_inline_text(inline_message_id=query.inline_message_id, text=strings.HELP_CMD.format(module=module, help=help), parse_mode=enums.ParseMode.MARKDOWN, reply_markup=button)
-       
-            
