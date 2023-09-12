@@ -1,19 +1,15 @@
 import strings
-
 from PyroX import bot, MODULE, INFO as GET_INFO
-from pyrogram import filters, enums
-from PyroX import PyroX
-from pyrogram.types import (
-    InlineKeyboardMarkup, InlineKeyboardButton
-)
-
+from pyrogram import filters, enums 
+from PyroX import PyroX 
+from pyrogram.types import (InlineKeyboardMarkup, InlineKeyboardButton)
 
 @bot.on_callback_query(filters.regex("help_back"))
 async def help_back(_, query):
     user_id = (await GET_INFO.PyroX()).id
     if not query.from_user.id == int(user_id):
         return await query.answer("😤 You aren't my master")
-
+    
     buttons = []
     for x in MODULE:
         buttons.append(
@@ -27,26 +23,32 @@ async def help_back(_, query):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons_in_columns)
 
     return await bot.edit_inline_text(
-        inline_message_id=query.inline_message_id,
-        text="[`HELP COMMANDS`]",
-        reply_markup=keyboard,
+        inline_message_id=query.inline_message_id, 
+        text="[`HELP COMMANDS`]", 
+        reply_markup=keyboard, 
         parse_mode=enums.ParseMode.MARKDOWN
     )
-
 
 @bot.on_callback_query(filters.regex('^help'))
 async def help_commnds(_, query):
     user_id = (await GET_INFO.PyroX()).id
     if not query.from_user.id == int(user_id):
         return await query.answer("😤 You aren't my master")
+    
     CB_NAME = query.data.split(':')[1].casefold()
     data = [x for x in MODULE if x['module'].casefold() == CB_NAME]
     if len(data) == 0:
-        return await query.answer("🤔 something wrong.")
+        return await query.answer("🤔 Something's wrong.")
+    
     module = data[0]['module']
-    help_text = data[0]['help']  # Renamed 'help' to 'help_text' to avoid conflicts
+    help_text = data[0]['help']
     button = InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ BACK", callback_data="help_back")]])
+    
     formatted_help = strings.HELP_CMD.format(module=module, help_text=help_text)  # Corrected formatting
-    return await bot.edit_inline_text(inline_message_id=query.inline_message_id,
-                                      text=formatted_help,  # Use the formatted string
-                                      parse_mode=enums.ParseMode.MARKDOWN, reply_markup=button)
+    
+    return await bot.edit_inline_text(
+        inline_message_id=query.inline_message_id, 
+        text=formatted_help, 
+        parse_mode=enums.ParseMode.MARKDOWN, 
+        reply_markup=button
+    )
